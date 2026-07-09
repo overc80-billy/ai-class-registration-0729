@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[50+] AI 리터러시 과정 입과 신청</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Noto Sans KR', sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; justify-content: center; padding: 2rem 1rem 4rem; }
+    .wrap { width: 100%; max-width: 560px; }
+    h2 { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 6px; }
+    .course-info { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+    .info-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #555; }
+    .info-item span { font-weight: 600; color: #111; }
+    .quota-bar { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+    .quota-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .quota-label { font-size: 13px; color: #888; }
+    .quota-nums { font-size: 15px; font-weight: 600; color: #111; }
+    .bar-track { height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 4px; transition: width .4s ease; background: #1D9E75; }
+    .bar-fill.full { background: #E24B4A; }
+    .status-badge { font-size: 12px; padding: 3px 10px; border-radius: 8px; font-weight: 600; }
+    .status-open { background: #E1F5EE; color: #085041; }
+    .status-closed { background: #FCEBEB; color: #791F1F; }
+    .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .field { margin-bottom: 1.1rem; }
+    label { display: block; font-size: 13px; color: #555; margin-bottom: 5px; font-weight: 600; }
+    input[type=text] { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 14px; outline: none; transition: border .2s; }
+    input[type=text]:focus { border-color: #1D9E75; }
+    .radio-group { display: flex; gap: 10px; margin-top: 2px; }
+    .radio-btn { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-size: 14px; cursor: pointer; background: #fff; color: #333; transition: .15s; user-select: none; }
+    .radio-btn:hover { background: #f5f5f5; }
+    .radio-btn.selected-yes { background: #E1F5EE; border-color: #1D9E75; color: #085041; font-weight: 600; }
+    .radio-btn.selected-no { background: #FCEBEB; border-color: #E24B4A; color: #791F1F; font-weight: 600; }
+    .form-fields.hidden { opacity: .35; pointer-events: none; }
+    .btn { width: 100%; padding: 12px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; margin-top: 4px; transition: opacity .15s; }
+    .btn-primary { background: #1D9E75; color: #fff; }
+    .btn-primary:hover { opacity: .88; }
+    .btn-primary:disabled { opacity: .45; cursor: not-allowed; }
+    .notice {
+      font-size: 13px;
+      color: #0a3d2e;
+      background: #d4f0e4;
+      border: 1.5px solid #1D9E75;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 1.2rem;
+      line-height: 1.8;
+      font-weight: 500;
+    }
+    .notice::before {
+      content: "📢 ";
+      font-size: 15px;
+    }
+    .cancel-section { margin-top: 1rem; padding-top: 1rem; border-top: 1px dashed #e0e0e0; }
+    .cancel-title { font-size: 13px; font-weight: 600; color: #888; margin-bottom: 8px; }
+    .cancel-row { display: flex; gap: 8px; }
+    .cancel-row input { flex: 1; }
+    .cancel-row .btn-cancel-sm { width: auto; padding: 10px 16px; background: #fff; color: #E24B4A; border: 1px solid #E24B4A; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap; }
+    .cancel-row .btn-cancel-sm:hover { background: #FCEBEB; }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
+    .modal { background: #fff; border-radius: 12px; padding: 1.75rem; max-width: 360px; width: 100%; text-align: center; }
+    .modal-icon { font-size: 36px; margin-bottom: 12px; }
+    .modal h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; color: #111; }
+    .modal p { font-size: 14px; color: #555; line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-line; }
+    .modal-btns { display: flex; gap: 8px; }
+    .modal .close-btn { flex: 1; background: #f5f5f5; border: 1px solid #ddd; color: #333; padding: 9px 28px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
+    .modal .confirm-btn { flex: 1; background: #E24B4A; border: none; color: #fff; padding: 9px 28px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
+    .list-section { background: #fff; border: 1px solid #e0e0e0; border-radius: 12px; padding: 1.25rem; }
+    .list-section h3 { font-size: 16px; font-weight: 700; margin-bottom: 1rem; color: #111; }
+    .list-tabs { display: flex; gap: 8px; margin-bottom: 1rem; }
+    .tab { font-size: 13px; padding: 5px 16px; border-radius: 8px; border: 1px solid #ddd; cursor: pointer; background: transparent; color: #888; transition: .15s; }
+    .tab.active { background: #f0f0f0; color: #111; border-color: #bbb; font-weight: 600; }
+    .entry { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-radius: 8px; background: #f9f9f9; margin-bottom: 6px; font-size: 13px; }
+    .num { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .num-conf { background: #E1F5EE; color: #085041; }
+    .num-wait { background: #FAECE7; color: #712B13; }
+    .entry-info { flex: 1; color: #111; }
+    .entry-sub { font-size: 11px; color: #888; margin-top: 2px; }
+    .empty-msg { font-size: 13px; color: #aaa; text-align: center; padding: 1.5rem; }
+    .loading { text-align: center; font-size: 14px; color: #aaa; padding: 2rem; }
+    .footer { text-align: center; font-size: 12px; color: #bbb; margin-top: 2rem; }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <h2>📚 [50+] AI 리터러시 과정 입과 신청</h2>
+  <br>
+  <div class="course-info">
+    <div class="info-item">📅 <span>2026.7.29(수)</span></div>
+    <div class="info-item">📍 <span>삼성금융캠퍼스 (서울시 서초동)</span></div>
+    <div class="info-item">👥 <span>영업 · 보상 · 스텝 업무 직원 대상</span></div>
+  </div>
+
+  <div class="quota-bar">
+    <div class="quota-row">
+      <span class="quota-label">현재 모집 현황</span>
+      <span id="statusBadge" class="status-badge status-open">모집 중</span>
+    </div>
+    <div class="quota-row" style="margin-bottom:10px">
+      <span class="quota-label">확정 / 정원</span>
+      <span class="quota-nums"><span id="confirmedCount">0</span> / 30명</span>
+    </div>
+    <div class="bar-track"><div class="bar-fill" id="barFill" style="width:0%"></div></div>
+    <div style="margin-top:6px;font-size:12px;color:#aaa">
+      대기자 <span id="waitCount">0</span>명
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="field">
+      <label>본 과정은 중장년 직원들의 AI 업무 활용 능력 향상을 위해 개설된 기본 과정임을 인지하셨습니까? *</label>
+      <div class="radio-group">
+        <div class="radio-btn" id="btnYes" onclick="selectEligibility('yes')">예</div>
+        <div class="radio-btn" id="btnNo" onclick="selectEligibility('no')">아니오</div>
+      </div>
+    </div>
+
+    <div class="form-fields hidden" id="formFields">
+      <div class="notice">
+        정원(30명) 초과 시에도 신청 가능하며, 대기자 명단에 등록됩니다. 확정자와 대기자 명단은 신청 폼에서 실시간으로 확인 가능하며, 취소자 발생 시 순서대로 개별 안내드립니다.
+      </div>
+      <div class="field">
+        <label for="empInput">사번 *</label>
+        <input id="empInput" type="text" placeholder="예: 10700108">
+      </div>
+      <div class="field">
+        <label for="nameInput">성함 *</label>
+        <input id="nameInput" type="text" placeholder="예: 홍길동">
+      </div>
+      <div class="field">
+        <label for="deptInput">부서명 *</label>
+        <input id="deptInput" type="text" placeholder="예: 인사파트">
+      </div>
+      <button class="btn btn-primary" id="submitBtn" onclick="handleSubmit()">신청하기</button>
+
+      <div class="cancel-section">
+        <div class="cancel-title">📌 신청 취소</div>
+        <div class="cancel-row">
+          <input id="cancelEmpInput" type="text" placeholder="사번 입력 후 취소 버튼 클릭">
+          <button class="btn-cancel-sm" onclick="handleCancelRequest()">취소</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="list-section">
+    <h3>신청자 현황</h3>
+    <div class="list-tabs">
+      <button class="tab active" onclick="switchTab('confirmed', this)">확정자</button>
+      <button class="tab" onclick="switchTab('waiting', this)">대기자</button>
+    </div>
+    <div id="listArea"><div class="loading">불러오는 중...</div></div>
+  </div>
+
+  <div class="footer">삼성화재 AI 리터러시 교육 · 문의: 교육담당자</div>
+</div>
+
+<div class="overlay" id="overlay" style="display:none">
+  <div class="modal">
+    <div class="modal-icon" id="modalIcon"></div>
+    <h3 id="modalTitle"></h3>
+    <p id="modalMsg"></p>
+    <div class="modal-btns">
+      <button class="close-btn" onclick="closeModal()">확인</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="cancelOverlay" style="display:none">
+  <div class="modal">
+    <div class="modal-icon">⚠️</div>
+    <h3>신청을 취소하시겠습니까?</h3>
+    <p id="cancelModalMsg"></p>
+    <div class="modal-btns">
+      <button class="close-btn" onclick="closeCancelModal()">돌아가기</button>
+      <button class="confirm-btn" onclick="confirmCancel()">취소 확정</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyASZlivk7glR6wqMNZNJfl8ijOtgjYjIoo",
+    authDomain: "ai-class-reg.firebaseapp.com",
+    projectId: "ai-class-reg",
+    storageBucket: "ai-class-reg.firebasestorage.app",
+    messagingSenderId: "788180170286",
+    appId: "1:788180170286:web:e76275bc82d2fa072351bf"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const MAX = 30;
+  let currentTab = 'confirmed';
+  let eligibility = null;
+  let cancelTarget = null;
+
+  const docRef = doc(db, "registration", "data_0729");
+
+  async function loadData() {
+    const snap = await getDoc(docRef);
+    if (snap.exists()) return snap.data();
+    return { confirmed: [], waiting: [] };
+  }
+
+  async function saveData(conf, wait) {
+    await setDoc(docRef, { confirmed: conf, waiting: wait });
+  }
+
+  onSnapshot(docRef, (snap) => {
+    const data = snap.exists() ? snap.data() : { confirmed: [], waiting: [] };
+    updateUI(data.confirmed || [], data.waiting || []);
+  });
+
+  function updateUI(conf, wait) {
+    document.getElementById('confirmedCount').textContent = conf.length;
+    document.getElementById('waitCount').textContent = wait.length;
+    const pct = Math.min(100, Math.round((conf.length / MAX) * 100));
+    const bar = document.getElementById('barFill');
+    bar.style.width = pct + '%';
+    bar.className = 'bar-fill' + (conf.length >= MAX ? ' full' : '');
+    const badge = document.getElementById('statusBadge');
+    if (conf.length >= MAX) {
+      badge.textContent = '마감';
+      badge.className = 'status-badge status-closed';
+    } else {
+      badge.textContent = '모집 중';
+      badge.className = 'status-badge status-open';
+    }
+    renderList(conf, wait);
+  }
+
+  function renderList(conf, wait) {
+    const area = document.getElementById('listArea');
+    const list = currentTab === 'confirmed' ? conf : wait;
+    if (!list.length) {
+      area.innerHTML = '<div class="empty-msg">아직 신청자가 없습니다.</div>';
+      return;
+    }
+    area.innerHTML = list.map((p, i) => `
+      <div class="entry">
+        <div class="num ${currentTab === 'confirmed' ? 'num-conf' : 'num-wait'}">${i + 1}</div>
+        <div class="entry-info">
+          <strong style="color:${p.promoted ? '#1D6FA4' : '#111'}">${p.name}${p.promoted ? ' ★승격' : ''}</strong> · ${p.emp}
+          <div class="entry-sub">${p.dept}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  window.switchTab = function(tab, el) {
+    currentTab = tab;
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    loadData().then(d => renderList(d.confirmed || [], d.waiting || []));
+  };
+
+  window.selectEligibility = function(val) {
+    eligibility = val;
+    document.getElementById('btnYes').className = 'radio-btn' + (val === 'yes' ? ' selected-yes' : '');
+    document.getElementById('btnNo').className = 'radio-btn' + (val === 'no' ? ' selected-no' : '');
+    if (val === 'no') {
+      showModal('🚫', '교육대상자가 아닙니다', '본 과정의 교육 대상이 아닙니다.\n신청이 불가합니다.');
+      document.getElementById('formFields').classList.add('hidden');
+    } else {
+      document.getElementById('formFields').classList.remove('hidden');
+    }
+  };
+
+  window.handleSubmit = async function() {
+    if (eligibility !== 'yes') {
+      showModal('⚠️', '확인 필요', '교육 대상 여부를 먼저 선택해주세요.');
+      return;
+    }
+    const emp = document.getElementById('empInput').value.trim();
+    const name = document.getElementById('nameInput').value.trim();
+    const dept = document.getElementById('deptInput').value.trim();
+    if (!emp || !name || !dept) {
+      showModal('⚠️', '입력 확인', '모든 항목을 빠짐없이 입력해주세요.');
+      return;
+    }
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = '처리 중...';
+
+    const data = await loadData();
+    const conf = data.confirmed || [];
+    const wait = data.waiting || [];
+    const dup = [...conf, ...wait].find(p => p.emp === emp);
+    if (dup) {
+      const isConf = conf.find(p => p.emp === emp);
+      if (isConf) {
+        showModal('ℹ️', '이미 신청되었습니다', `${name}님(${emp})은 이미 확정 신청자입니다.`);
+      } else {
+        const wPos = wait.findIndex(p => p.emp === emp) + 1;
+        showModal('ℹ️', '이미 대기 중입니다', `${name}님은 현재 대기 ${wPos}번째입니다.`);
+      }
+      btn.disabled = false;
+      btn.textContent = '신청하기';
+      return;
+    }
+
+    const person = { name, emp, dept, ts: Date.now() };
+    if (conf.length < MAX) {
+      conf.push(person);
+      await saveData(conf, wait);
+      clearForm();
+      showModal('✅', '신청이 완료되었습니다!', `${name}님, ${conf.length}번째로 확정되었습니다.\n교육 관련 안내는 추후 부서를 통해 전달드리겠습니다.`);
+    } else {
+      wait.push(person);
+      await saveData(conf, wait);
+      clearForm();
+      showModal('🔔', '정원이 초과되었습니다', `정원 초과로 모집이 마감되었습니다.\n귀하의 대기 순서는 ${wait.length}번째입니다.\n취소자 발생 시 순서에 따라 개별 연락드리겠습니다.`);
+    }
+    btn.disabled = false;
+    btn.textContent = '신청하기';
+  };
+
+  window.handleCancelRequest = async function() {
+    const emp = document.getElementById('cancelEmpInput').value.trim();
+    if (!emp) {
+      showModal('⚠️', '입력 확인', '취소할 사번을 입력해주세요.');
+      return;
+    }
+    const data = await loadData();
+    const conf = data.confirmed || [];
+    const wait = data.waiting || [];
+    const person = [...conf, ...wait].find(p => p.emp === emp);
+    if (!person) {
+      showModal('❌', '신청 내역 없음', `사번 ${emp}로 신청된 내역이 없습니다.`);
+      return;
+    }
+    const isConf = conf.find(p => p.emp === emp);
+    const statusText = isConf ? '확정자' : `대기 ${wait.findIndex(p => p.emp === emp) + 1}번째`;
+    cancelTarget = emp;
+    document.getElementById('cancelModalMsg').textContent = `${person.name}님 (${person.dept}) · ${statusText}\n\n취소 시 되돌릴 수 없습니다.`;
+    document.getElementById('cancelOverlay').style.display = 'flex';
+  };
+
+  window.confirmCancel = async function() {
+    if (!cancelTarget) return;
+    const data = await loadData();
+    let conf = data.confirmed || [];
+    let wait = data.waiting || [];
+    const wasConf = conf.find(p => p.emp === cancelTarget);
+    conf = conf.filter(p => p.emp !== cancelTarget);
+    wait = wait.filter(p => p.emp !== cancelTarget);
+    if (wasConf && wait.length > 0) {
+      const promoted = wait.shift();
+      promoted.promoted = true;
+      conf.push(promoted);
+      await saveData(conf, wait);
+      closeCancelModal();
+      showModal('✅', '취소 완료', `신청이 취소되었습니다.\n대기 1번이었던 ${promoted.name}님이 자동으로 확정 승격되었습니다.`);
+    } else {
+      await saveData(conf, wait);
+      closeCancelModal();
+      showModal('✅', '취소 완료', '신청이 정상적으로 취소되었습니다.');
+    }
+    document.getElementById('cancelEmpInput').value = '';
+    cancelTarget = null;
+  };
+
+  window.closeCancelModal = function() {
+    document.getElementById('cancelOverlay').style.display = 'none';
+    cancelTarget = null;
+  };
+
+  function clearForm() {
+    document.getElementById('empInput').value = '';
+    document.getElementById('nameInput').value = '';
+    document.getElementById('deptInput').value = '';
+  }
+
+  window.showModal = function(icon, title, msg) {
+    document.getElementById('modalIcon').textContent = icon;
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalMsg').textContent = msg;
+    document.getElementById('overlay').style.display = 'flex';
+  };
+
+  window.closeModal = function() {
+    document.getElementById('overlay').style.display = 'none';
+  };
+</script>
+</body>
+</html>
